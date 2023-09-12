@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './App.css';
-import { Button, Modal, Input, Popconfirm } from 'antd';
-import { PlusOutlined, DeleteOutlined, } from '@ant-design/icons';
+import { Button, Modal, Input, Popconfirm,Table } from 'antd';
+import { PlusOutlined, DeleteOutlined,EditOutlined } from '@ant-design/icons';
 import { count } from "console";
 
 
@@ -30,6 +30,49 @@ function App() {
 
   ]);
 
+
+  const columns = [
+    {
+      title: 'STT',
+      dataIndex: 'stt',
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: 'orderId',
+      dataIndex: 'orderId',
+    },
+    {
+      title: 'Name',
+      dataIndex: 'Name',
+    },
+    {
+      title: 'Email',
+      dataIndex: 'Email',
+    },
+
+    {
+      title: 'Phone',
+      dataIndex: 'Phone',
+    },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      render: (_:any, record:any) => <div className='action'>
+        {/* <EditOutlined className="edit-btn" onClick={() => handleEdit(record)} /> */}
+        <Popconfirm
+          title="Delete the task"
+          description="Are you sure to delete this task?"
+          onConfirm={confirm}
+          onCancel={cancel}
+          okText="Delete"
+          cancelText="Cancel"
+        >
+          <DeleteOutlined className="delete-btn" onClick={() => handleDelete(record)} />
+        </Popconfirm>
+      </div>
+    },
+  ];
+  
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -50,8 +93,10 @@ function App() {
     }
     setData([...data, item])
     setCount(count + 1);
+    setEmail("")
 
   };
+
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -171,7 +216,7 @@ function App() {
         <div ><input className='sorttable1' type="date" placeholder="Ngày tạo"></input></div>
         <div className="sorttable4" style={{ display: 'flex' }}>Lọc</div>
       </div>
-      <table className='custom-table' style={{ border: '1px solid black' }}>
+      {/* <table className='custom-table' style={{ border: '1px solid black' }}>
         <thead>
           <tr>
             <th>#</th>
@@ -221,7 +266,11 @@ function App() {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table> */}
+       <Table
+        columns={columns}
+        dataSource={data}
+      />
     </div>
   );
 }
