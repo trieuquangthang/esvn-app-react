@@ -1,19 +1,34 @@
 import React, { useEffect, useState } from "react";
 import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'font-awesome/css/font-awesome.min.css';
-import OrderList from './data.json'
-import AddNewItem from "./component/Create";
-import { Button, Modal ,Input} from 'antd';
+import { Button, Modal, Input, Popconfirm } from 'antd';
+import { PlusOutlined, DeleteOutlined, } from '@ant-design/icons';
+import { count } from "console";
 
 
 function App() {
   const [message, setMessage] = useState('Chưa có sự kiện click');
   const [isFormVisible, setIsFormVisible] = useState(false)
   const [create, setCreate] = useState(false)
-  const [number, setNumber] = useState("")
-  const [email, setEmail] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [count, setCount] = useState(4);
+  const [email, setEmail] = useState("")
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [status, setStatus] = useState("");
+  const [source, setSource] = useState("");
+  const [createDate, setCreateDate] = useState("");
+  const [total, setTotal] = useState("");
+  const [id, setId] = useState();
+  const [orderId, setOrderId] = useState("");
+
+
+  const [data, setData] = useState([
+    { "id": 1, "stt": 1, "orderId": "0021", "Name": "John Joe", "Email": "john@example.com", "Phone": "0941399432", "Status": "Chờ xử lý", "source": "Không xác định", "CreateDate": "11:14 18/08/2017", "Total": "13230000" },
+    { "id": 2, "stt": 2, "orderId": "0021", "Name": "John Joe", "Email": "john@example.com", "Phone": "0941399432", "Status": "Chờ xử lý", "source": "Không xác định", "CreateDate": "11:14 18/08/2017", "Total": "13230000" },
+    { "id": 3, "stt": 3, "orderId": "0021", "Name": "John Joe", "Email": "john@example.com", "Phone": "0941399432", "Status": "Chờ xử lý", "source": "Không xác định", "CreateDate": "11:14 18/08/2017", "Total": "13230000" },
+    { "id": 4, "stt": 4, "orderId": "0021", "Name": "John Joe", "Email": "john@example.com", "Phone": "0941399432", "Status": "Chờ xử lý", "source": "Không xác định", "CreateDate": "11:14 18/08/2017", "Total": "13230000" },
+
+  ]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -21,7 +36,20 @@ function App() {
 
   const handleOk = () => {
     setIsModalOpen(false);
-setCreate(true)
+    const item = {
+      "id": count + 1,
+      "stt": count + 1,
+      "orderId": `${orderId}`,
+      "Name": `${name}`,
+      "Email": `${email}`,
+      "Phone": `${phone}`,
+      "Status": `${status}`,
+      "source": `${source}`,
+      "CreateDate": `${createDate}`,
+      "Total": total
+    }
+    setData([...data, item])
+    setCount(count + 1);
 
   };
 
@@ -31,8 +59,23 @@ setCreate(true)
 
 
   // Hàm xử lý sự kiện click cho biểu tượng "eye"
-  const handleEyeClick = () => {
+  const handleDelete = (item:any) => {
     setMessage('Bạn đã click vào biểu tượng Eye.');
+    console.log('delete',item)
+    setId(item.id)
+
+  };
+
+  const confirm = (e: any) => {
+    console.log(e);
+    const newData = data.filter((item) => item.id !== id);
+    setData(newData);
+
+  };
+
+  const cancel = (e: any) => {
+    console.log(e);
+
   };
 
   // Hàm xử lý sự kiện click cho biểu tượng "print"
@@ -44,22 +87,20 @@ setCreate(true)
   const handleTimesClick = () => {
     setMessage('Bạn đã click vào biểu tượng Times (X).');
   };
-  const [isOpen, setIsOpen] = useState(false); // Trạng thái để kiểm tra xem danh sách trạng thái có được hiển thị hay không
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
-    setIsOpen(!isOpen); // Khi kích vào biểu tượng, đảo ngược trạng thái hiển thị danh sách
+    setIsOpen(!isOpen);
   };
 
-const handleNumber = (e: any)=>{
-  console.log(e.target.value)
-  setNumber(e.target.value)
-}
+  const handleNumber = (e: any) => {
+    console.log(e.target.value)
+  }
 
-const handleEmail = (e: any)=>{
-  console.log(e.target.value)
-  setEmail(e.target.value)
-}
-  const [data, setData] = useState([]);
+  const handleEmail = (e: any) => {
+    console.log(e.target.value)
+    setEmail(e.target.value)
+  }
 
   const handleAddItem = () => {
     console.log('cccccccccc')
@@ -67,28 +108,6 @@ const handleEmail = (e: any)=>{
   };
 
 
-  useEffect(() => {
-    if(create){
-      console.log('addddddddd')
-    }
-
-    fetchData()
-  }, [email,number,create]);
-
-const fetchData = ()=>{
-  fetch("data.json")
-  .then((response) => response.json())
-  .then((data) => {
-    setData(data);
-  })
-  .catch((error) => {
-    console.error("Error fetching data:", error)
-  });
-}
-
-  useEffect(() => {
-    fetchData()
-  }, []);
 
   return (
     <div className="main-body">
@@ -100,17 +119,28 @@ const fetchData = ()=>{
         </div>
         <div className="create-export" style={{ display: 'flex' }}>
           <div className='menu' style={{ display: 'flex' }}>
-
             <Button type="primary" onClick={showModal}>
-            <i className="fa fa-plus" style={{ fontSize: '25px' }}></i>
+              <PlusOutlined />
             </Button>
             <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-            <Input placeholder="Basic usage" onKeyUp={handleNumber}/>
-            <Input placeholder="Basic usage" onKeyUp={handleEmail}/>
+              <h4>Mã đơn</h4>
+              <Input placeholder="Basic usage" onChange={e => setOrderId(e.target.value)} value={orderId} />
+              <h4>Tên</h4>
+              <Input placeholder="Basic usage" onChange={e => setName(e.target.value)} value={name} />
+              <h4>Mail</h4>
+              <Input placeholder="Basic usage" onChange={e => setEmail(e.target.value)} value={email} />
+              <h4>Phone</h4>
+              <Input placeholder="Basic usage" onChange={e => setPhone(e.target.value)} value={phone} />
+              <h4>Trạng thái</h4>
+              <Input placeholder="Basic usage" onChange={e => setStatus(e.target.value)} value={status} />
+              <h4>Nguồn</h4>
+              <Input placeholder="Basic usage" onChange={e => setSource(e.target.value)} value={source} />
+              <h4>Ngày tạo</h4>
+              <Input placeholder="Basic usage" onChange={e => setCreateDate(e.target.value)} value={createDate} />
+              <h4>Tổng</h4>
+              <Input placeholder="Basic usage" onChange={e => setTotal(e.target.value)} value={total} />
             </Modal>
-
           </div>
-
           <div className='menu' style={{ display: 'flex' }}><i className="fa fa-cloud-download" style={{ fontSize: '25px' }}></i><h5>Xuất Dữ Liệu</h5></div>
         </div>
       </div>
@@ -125,7 +155,6 @@ const fetchData = ()=>{
             --Trạng Thái--
             <i className="fa fa-sort-down" onClick={toggleDropdown}></i> {/* Khi kích vào mũi tên, gọi hàm toggleDropdown */}
           </div>
-
           {/* Hiển thị danh sách trạng thái nếu isOpen là true */}
           {isOpen && (
             <div className="status-list">
@@ -160,7 +189,7 @@ const fetchData = ()=>{
           </tr>
         </thead>
         <tbody>
-          {OrderList.map((item) => (
+          {data.map((item) => (
             <tr key={item.stt}>
               <td>{item.stt}</td>
               <td style={{ textAlign: 'center' }}><input type='checkbox'></input></td>
@@ -169,15 +198,24 @@ const fetchData = ()=>{
               <td>{item.Email}</td>
               <td>{item.Phone}</td>
               <td>{item.Status}</td>
-              <td>{item.Suource}</td>
+              <td>{item.source}</td>
               <td></td>
               <td>{item.CreateDate}</td>
               <td>{item.Total}</td>
               <td>
                 <div className='main-box' style={{ display: 'flex' }}>
-                  <button className='box1' onClick={handleEyeClick}><i className="fa fa-eye white-icon" style={{ fontSize: '25px' }}></i></button>
                   <button className='box2' onClick={handlePrintClick}><i className="fa fa-print white-icon" style={{ fontSize: '25px' }}></i></button>
                   <button className='box3' onClick={handleTimesClick}><i className="fa fa-times white-icon" style={{ fontSize: '25px' }}></i></button>
+                  <Popconfirm
+                    title="Delete the task"
+                    description="Are you sure to delete this task?"
+                    onConfirm={confirm}
+                    onCancel={cancel}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <DeleteOutlined onClick={() => handleDelete(item)} />
+                  </Popconfirm>
                 </div>
               </td>
             </tr>
