@@ -1,32 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { Modal, Input, Button, Table, Popconfirm } from "antd";
-import TableComponent from "./component/TableComponent";
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
+import CustomerComponent from "./component/CustomerComponent";
 import "./App.css";
-import Demo from "./component/Demo";
+import EmployeeComponent from "./component/EmployeeComponent";
+import Order from "./component/Order";
+import OrderItems from "./component/OrderItems";
+import Payment from "./component/Payment";
+import PaymentMethods from "./component/PaymentMethods";
+import Products from "./component/Products";
+import ShippingMethods from "./component/Shippings";
+import Shippings from "./component/ShippingMethods";
+import Home from './component/Home';
 
-function App (){
-    return (
-      <Router>
-        <div>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">Trang chủ</Link>
-              </li>
-              <li>
-                <Link to="/about">Về chúng tôi</Link>
-              </li>
-            </ul>
-          </nav>
-  
-          <hr />
-  
-          {/* <Route exact path="/" component={TableComponent} />
-          <Route exact path="/about" component={Demo} /> */}
-        </div>
-      </Router>
-    );
+
+function App() {
+  return (
+      <Routes>
+        <Route path="/" element={<Home/>}></Route>
+        <Route path="/employee" element={<EmployeeComponent />}></Route>
+        <Route path="/order" element={<Order />}></Route>
+        <Route path="/customer" element={<CustomerComponent />}></Route>
+        <Route path="/orderitems" element={<OrderItems />}></Route>
+        <Route path="/payment" element={<Payment />}></Route>
+        <Route path="/paymentmethods" element={<PaymentMethods />}></Route>
+        <Route path="/products" element={<Products />}></Route>
+        <Route path="/shippingmethods" element={<ShippingMethods />}></Route>
+        <Route path="/shippings" element={<Shippings />}></Route>
+      </Routes>
+  )
 }
 
 export default App;

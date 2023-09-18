@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
-import { Modal, Table, Button, Popconfirm, Form, InputNumber, Input } from 'antd';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import type { ColumnsType } from 'antd/es/table';
+import React, { useState } from "react";
+import {
+    Button,
+    Modal,
+    Input,
+    Table,
+    Popconfirm,
+} from "antd";
+import {
+    DeleteOutlined,
+    PlusOutlined,
+} from "@ant-design/icons";
+import {  Form, InputNumber,  } from 'antd';
+import type { ColumnsType,  } from 'antd/es/table';
+import { Link } from 'react-router-dom';
 
-function TableComponent() {
+function EmployeeComponent() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -19,43 +30,55 @@ function TableComponent() {
             {
                 key: '1',
                 stt: 1,
-                CustomerID: 1,
+                employeeID: 1,
                 name: 'Triệu Quang Đức',
                 age: 18,
                 phoneNumber: '0941399432',
                 email: 'ductq@gmail.com',
+                status: 'Đang làm việc',
                 address: 'Xóm liều, Hà Nội 9',
+                createdDate: 15/9/2023,
+                createdBy: 'ĐứcTQ',
     
             },
             {
                 key: '2',
-                stt: 1,
-                CustomerID: 1,
+                stt: 2,
+                employeeID: 1,
                 name: 'Triệu Quang Đức',
                 age: 18,
                 phoneNumber: '0941399432',
                 email: 'ductq@gmail.com',
+                status: 'Đang làm việc',
                 address: 'Xóm liều, Hà Nội 9',
+                createdDate: 15/9/2023,
+                createdBy: 'ĐứcTQ',
             },
             {
                 key: '3',
-                stt: 1,
-                CustomerID: 1,
+                stt: 3,
+                employeeID: 1,
                 name: 'Triệu Quang Đức',
                 age: 18,
                 phoneNumber: '0941399432',
                 email: 'ductq@gmail.com',
+                status: 'Đang làm việc',
                 address: 'Xóm liều, Hà Nội 9',
+                createdDate: 15/9/2023,
+                createdBy: 'ĐứcTQ',
             },
             {
                 key: '4',
-                stt: 1,
-                CustomerID: 1,
+                stt: 4,
+                employeeID: 1,
                 name: 'Triệu Quang Đức',
                 age: 18,
                 phoneNumber: '0941399432',
                 email: 'ductq@gmail.com',
+                status: 'Đang làm việc',
                 address: 'Xóm liều, Hà Nội 9',
+                createdDate: 15/9/2023,
+                createdBy: 'ĐứcTQ',
             }
         ]
     );
@@ -63,7 +86,7 @@ function TableComponent() {
     interface DataType {
         key: React.Key;
         stt: number;
-        CustomerID: number;
+        employeeID: number,
         name: string;
         age: number;
         phoneNumber: string;
@@ -79,18 +102,15 @@ function TableComponent() {
         },
 
         {
-            title: 'CustomerID',
-            dataIndex: 'CustomerID',
-            render: (_, record) => <>
-                <a onClick={() => showModal()}>{record.CustomerID}</a>
+            title: 'EmployeeID',
+            dataIndex: 'employeeID',
+            render: (_:any, record: any) => <>
+                <a onClick={() => showModal()}>{record.employeeID}</a>
             </>,
         },
         {
             title: 'Name',
             dataIndex: 'name',
-            render: (_, record) => <>
-                <a onClick={() => showModal()}>{record.name}</a>
-            </>,
         },
         {
             title: 'Age',
@@ -109,6 +129,18 @@ function TableComponent() {
         {
             title: 'Address',
             dataIndex: 'address',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+        },
+        {
+            title: 'CreateDate',
+            dataIndex: 'creatDate',
+        },
+        {
+            title: 'CreateBy',
+            dataIndex: 'creatBy',
         },
         {
             title: 'Actions',
@@ -135,10 +167,12 @@ function TableComponent() {
             ),
         },
     ];
+    const handleDelete = (record:any) => {
+        const newData = data.filter((item) => item! == record);
+        setData(newData);
 
-    const handleDelete = (record: any) => {
-        console.log(record)
     }
+
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -158,12 +192,7 @@ function TableComponent() {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
-    //Xử lý xóa dữ liệu
-    // const handleDelete = (record) => {
-    //     const newData = data.filter((item) => item! == record);
-    //     setData(newData);
 
-    // }
 
 
     const layout = {
@@ -189,8 +218,12 @@ function TableComponent() {
     };
     return (
         <>
+            <div style={{width:'100px', lineHeight:'50px',backgroundColor:'grey',textAlign:'center',justifyContent:"center",borderRadius:"5px"}}>
+              <Link to='/' style={{fontSize:'24px',textDecoration: "none",color:'white'}}>Home</Link>
+            </div>
+            <h1>Employee</h1>
             <Button type="primary" onClick={showModal}>
-                Thêm Mới
+                Thêm Mới <PlusOutlined />
             </Button>
             <Modal title="Thêm mới" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                 <Form
@@ -223,4 +256,4 @@ function TableComponent() {
             </Table>
         </>)
 }
-export default TableComponent;
+export default EmployeeComponent;
