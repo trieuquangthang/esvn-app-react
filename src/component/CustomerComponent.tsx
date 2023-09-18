@@ -225,9 +225,6 @@ function CustomerComponent() {
 
     return (
         <div className="main-body">
-            <div style={{ width: '100px', lineHeight: '50px', backgroundColor: 'grey', textAlign: 'center', justifyContent: "center", borderRadius: "5px" }}>
-                <Link to='/' style={{ fontSize: '24px', textDecoration: "none", color: 'white' }}>Home</Link>
-            </div>
             <h1>Customer</h1>
             <Button type="primary" onClick={showModal}>
                 Thêm mới<PlusOutlined />

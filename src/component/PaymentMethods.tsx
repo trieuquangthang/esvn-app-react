@@ -170,9 +170,7 @@ function PaymentMethods() {
     };
     return (
         <>
-            <div style={{width:'100px', lineHeight:'50px',backgroundColor:'grey',textAlign:'center',justifyContent:"center",borderRadius:"5px"}}>
-              <Link to='/' style={{fontSize:'24px',textDecoration: "none",color:'white'}}>Home</Link>
-            </div>
+
             <h1>Payment Method</h1>
             <Button type="primary" onClick={showModal}>
                 Thêm Mới <PlusOutlined />

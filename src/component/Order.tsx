@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Table, Button, Popconfirm, Form, InputNumber, Input } from 'antd';
-import { DeleteOutlined, EditOutlined,PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { Link } from 'react-router-dom';
 
@@ -11,7 +11,7 @@ function Order() {
 
     // sử dụng form để quản lý dữ liệu
     const [form] = Form.useForm(
-        
+
     );
 
     // Dữ liệu của bảng
@@ -26,9 +26,9 @@ function Order() {
                 phoneNumber: '0941399432',
                 employeeSubmit: 'ductq@gmail.com',
                 orderChannel: "Online",
-                createdDate: 15/9/2023,
+                createdDate: 15 / 9 / 2023,
                 createdBy: 'ĐứcTQ',
-    
+
             },
             {
                 key: '2',
@@ -39,7 +39,7 @@ function Order() {
                 phoneNumber: '0941399432',
                 employeeSubmit: 'ductq@gmail.com',
                 orderChannel: "Online",
-                createdDate: 15/9/2023,
+                createdDate: 15 / 9 / 2023,
                 createdBy: 'ĐứcTQ',
             },
             {
@@ -51,7 +51,7 @@ function Order() {
                 phoneNumber: '0941399432',
                 employeeSubmit: 'ductq@gmail.com',
                 orderChannel: "Online",
-                createdDate: 15/9/2023,
+                createdDate: 15 / 9 / 2023,
                 createdBy: 'ĐứcTQ',
             },
             {
@@ -63,7 +63,7 @@ function Order() {
                 phoneNumber: '0941399432',
                 employeeSubmit: 'ductq@gmail.com',
                 orderChannel: "Online",
-                createdDate: 15/9/2023,
+                createdDate: 15 / 9 / 2023,
                 createdBy: 'ĐứcTQ',
             }
         ]
@@ -139,14 +139,14 @@ function Order() {
                         okText="Delete"
                         cancelText="Cancel"
                     >
-                       <Button type="primary" danger><DeleteOutlined className="delete-btn" /></Button>
+                        <Button type="primary" danger><DeleteOutlined className="delete-btn" /></Button>
                     </Popconfirm>
 
                 </div>
             ),
         },
     ];
-    const handleDelete = (record:any) => {
+    const handleDelete = (record: any) => {
         const newData = data.filter((item) => item! == record);
         setData(newData);
 
@@ -166,7 +166,7 @@ function Order() {
             setIsModalOpen(false);
             form.resetFields();
         });
-    }; 
+    };
     //xử lý đóng modal khi nhấn nút hủy
     const handleCancel = () => {
         setIsModalOpen(false);
@@ -197,9 +197,7 @@ function Order() {
     };
     return (
         <>
-            <div style={{width:'100px', lineHeight:'50px',backgroundColor:'grey',textAlign:'center',justifyContent:"center",borderRadius:"5px"}}>
-              <Link to='/' style={{fontSize:'24px',textDecoration: "none",color:'white'}}>Home</Link>
-            </div>
+
             <h1>Order</h1>
             <Button type="primary" onClick={showModal}>
                 Thêm Mới <PlusOutlined />

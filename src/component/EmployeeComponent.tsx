@@ -10,8 +10,8 @@ import {
     DeleteOutlined,
     PlusOutlined,
 } from "@ant-design/icons";
-import {  Form, InputNumber,  } from 'antd';
-import type { ColumnsType,  } from 'antd/es/table';
+import { Form, InputNumber, } from 'antd';
+import type { ColumnsType, } from 'antd/es/table';
 import { Link } from 'react-router-dom';
 
 function EmployeeComponent() {
@@ -21,7 +21,7 @@ function EmployeeComponent() {
 
     // sử dụng form để quản lý dữ liệu
     const [form] = Form.useForm(
-        
+
     );
 
     // Dữ liệu của bảng
@@ -37,9 +37,9 @@ function EmployeeComponent() {
                 email: 'ductq@gmail.com',
                 status: 'Đang làm việc',
                 address: 'Xóm liều, Hà Nội 9',
-                createdDate: 15/9/2023,
+                createdDate: 15 / 9 / 2023,
                 createdBy: 'ĐứcTQ',
-    
+
             },
             {
                 key: '2',
@@ -51,7 +51,7 @@ function EmployeeComponent() {
                 email: 'ductq@gmail.com',
                 status: 'Đang làm việc',
                 address: 'Xóm liều, Hà Nội 9',
-                createdDate: 15/9/2023,
+                createdDate: 15 / 9 / 2023,
                 createdBy: 'ĐứcTQ',
             },
             {
@@ -64,7 +64,7 @@ function EmployeeComponent() {
                 email: 'ductq@gmail.com',
                 status: 'Đang làm việc',
                 address: 'Xóm liều, Hà Nội 9',
-                createdDate: 15/9/2023,
+                createdDate: 15 / 9 / 2023,
                 createdBy: 'ĐứcTQ',
             },
             {
@@ -77,7 +77,7 @@ function EmployeeComponent() {
                 email: 'ductq@gmail.com',
                 status: 'Đang làm việc',
                 address: 'Xóm liều, Hà Nội 9',
-                createdDate: 15/9/2023,
+                createdDate: 15 / 9 / 2023,
                 createdBy: 'ĐứcTQ',
             }
         ]
@@ -104,7 +104,7 @@ function EmployeeComponent() {
         {
             title: 'EmployeeID',
             dataIndex: 'employeeID',
-            render: (_:any, record: any) => <>
+            render: (_: any, record: any) => <>
                 <a onClick={() => showModal()}>{record.employeeID}</a>
             </>,
         },
@@ -160,14 +160,14 @@ function EmployeeComponent() {
                         okText="Delete"
                         cancelText="Cancel"
                     >
-                       <Button type="primary" danger><DeleteOutlined className="delete-btn" /></Button>
+                        <Button type="primary" danger><DeleteOutlined className="delete-btn" /></Button>
                     </Popconfirm>
 
                 </div>
             ),
         },
     ];
-    const handleDelete = (record:any) => {
+    const handleDelete = (record: any) => {
         const newData = data.filter((item) => item! == record);
         setData(newData);
 
@@ -187,7 +187,7 @@ function EmployeeComponent() {
             setIsModalOpen(false);
             form.resetFields();
         });
-    }; 
+    };
     //xử lý đóng modal khi nhấn nút hủy
     const handleCancel = () => {
         setIsModalOpen(false);
@@ -218,9 +218,7 @@ function EmployeeComponent() {
     };
     return (
         <>
-            <div style={{width:'100px', lineHeight:'50px',backgroundColor:'grey',textAlign:'center',justifyContent:"center",borderRadius:"5px"}}>
-              <Link to='/' style={{fontSize:'24px',textDecoration: "none",color:'white'}}>Home</Link>
-            </div>
+
             <h1>Employee</h1>
             <Button type="primary" onClick={showModal}>
                 Thêm Mới <PlusOutlined />
