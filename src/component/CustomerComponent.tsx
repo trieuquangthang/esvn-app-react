@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Table, Button, Popconfirm, Form, InputNumber, Input } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import type { ColumnsType } from 'antd/es/table';
-import { Link } from 'react-router-dom';
+
 
 
 

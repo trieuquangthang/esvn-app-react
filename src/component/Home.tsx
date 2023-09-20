@@ -12,6 +12,7 @@ import Products from "./Products";
 import ShippingMethods from "./Shippings";
 import Shippings from "./ShippingMethods";
 import CustomerComponent from "./CustomerComponent";
+import Test from './Test';
 type MenuItem = Required<MenuProps>['items'][number];
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -41,6 +42,7 @@ const items: MenuItem[] = [
   getItem(<Link to='/paymentmethods'>PaymentMethod</Link>, '7',),
   getItem(<Link to='/shippingmethods'>Shipping</Link>, '8',),
   getItem(<Link to='/shippings'>ShippingMethod</Link>, '9',),
+  getItem(<Link to='/test'>Test</Link>, '10',),
 ];
 
 const App: React.FC = () => {
@@ -69,7 +71,7 @@ const App: React.FC = () => {
       <Layout>
         <Header style={{ padding: 0, background: '#fff' }} />
         <Content style={{ margin: '24px 16px 0' }}>
-          <div style={{ padding: 24, minHeight: 360, background: '#fff' }}>
+          <div style={{ padding: 24, minHeight: 800, background: '#fff' }}>
             <Routes>
               <Route path="/employee" element={<EmployeeComponent />}></Route>
               <Route path="/order" element={<Order />}></Route>
@@ -80,6 +82,7 @@ const App: React.FC = () => {
               <Route path="/products" element={<Products />}></Route>
               <Route path="/shippingmethods" element={<ShippingMethods />}></Route>
               <Route path="/shippings" element={<Shippings />}></Route>
+              <Route path="/test" element={<Test />}></Route>
             </Routes>
           </div>
         </Content>
