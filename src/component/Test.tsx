@@ -63,28 +63,24 @@ function Test() {
     const handleDeleteOk = () => {
         setIsDeleteOpen(false)
     }
-    const handleCreatedCancle = () =>{
+    const handleCreatedCancle = () => {
         setIsCreated(false)
     }
-    const handleCreatedOk = () =>{
+    const handleCreatedOk = () => {
         setIsCreated(false)
     }
     const handleCreated = () => {
         setIsCreated(true)
     }
-    const handleViewCancel = () =>{
+    const handleViewCancel = () => {
         setIsView(false)
     }
-    const handleView = () =>{
+    const handleView = () => {
         setIsView(true)
     }
-    
-
-
     return (
         <>
             <button onClick={() => handleCreated()}>Thêm mới</button>
-
             <table>
                 <thead>
                     <tr>
@@ -145,8 +141,6 @@ function Test() {
                 Ok
             </Modal>
         </>
-
     )
 }
-
 export default Test;

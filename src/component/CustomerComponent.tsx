@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Table, Button, Popconfirm, Form, InputNumber, Input } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import * as yup from 'yup';
 function CustomerComponent() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRow, setSelectedRow] = useState<SelectedRowType | null>(null);
@@ -134,13 +133,16 @@ function CustomerComponent() {
     }
     // Chỉnh sửa 
     const handleEdit = (record: any) => {
-        setIsModalUpdateOpen(true);
+        console.log()
+        setIsModalOpen(true);
         setUserUpdate(record)
-
-        formUpdate.setFieldsValue({
+        form.setFieldsValue({
             FirstName: record.FirstName,
             LastName: record.LastName,
-      })
+            Phone: record.Phone,
+            Email: record.Email,
+            Status: record.Status,
+        })
 
     };
     // Xem
@@ -152,18 +154,36 @@ function CustomerComponent() {
         setIsView(true);
     };
     const onHandleCreate = (value: any) => {
-         setData(prev => [...prev, value])
-         setIsModalOpen(false)
-         form.resetFields();
+        setData(prev => [...prev, value])
+        setIsModalOpen(false)
+        form.resetFields();
     }
-    const onHandleUpdate = (value: any) => {
-        if(!userUpdate) return;
+    const validateName = (rule: any, value: any) => {
+        if (!value) {
+            return Promise.reject('Vui lòng nhập tên!');
+        } else if (/\d/.test(value)) {
+            return Promise.reject('Tên không thể chứa chữ số!');
+        }
+        return Promise.resolve();
+    };
 
+    const validateEmail = (rule: any, value: any) => {
+        if (!value) {
+            return Promise.reject('Vui lòng nhập email!');
+        } else if (!/^\S+@\S+\.\S+$/.test(value)) {
+            return Promise.reject('Email không hợp lệ!');
+        }
+        return Promise.resolve();
+    };
 
-        const customerUpdate = data.findIndex(customer => customer.CustomerID === userUpdate?.CustomerID)
-
-        console.log(customerUpdate);
-    }
+    const validatePhone = (rule: any, value: any) => {
+        if (!value) {
+            return Promise.reject('Vui lòng nhập số điện thoại!');
+        } else if (!/^[0-9]{10}$/.test(value)) {
+            return Promise.reject('Số điện thoại không hợp lệ!');
+        }
+        return Promise.resolve();
+    };
     return (
         <div className="main-body">
             <h1>Customer</h1>
@@ -171,29 +191,52 @@ function CustomerComponent() {
                 Thêm mới<PlusOutlined />
             </Button>
             <Modal title="Thêm mới" visible={isModalOpen} onOk={handleCreatedOk} onCancel={handleCreateCancel} footer={null}>
-            <Form
-                    form={form}
-                    onFinish={onHandleCreate}
-                    style={{ maxWidth: 600 }}
-                    
-                >
-                    <Form.Item name="FirstName" label="FirstName" >
+                <Form form={form} onFinish={onHandleCreate}>
+                    <Form.Item
+                        name="FirstName"
+                        label="FirstName"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập FirstName!' },
+                            { validator: validateName },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="LastName"label="LastName" >
+                    <Form.Item
+                        name="LastName"
+                        label="LastName"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập LastName!' },
+                            { validator: validateName },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="Phone" label="Phone" >
-                        <InputNumber />
-                    </Form.Item>
-                    <Form.Item name="Email" label="Email" >
+                    <Form.Item
+                        name="Phone"
+                        label="Phone"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập số điện thoại!' },
+                            { validator: validatePhone },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="Status" label="Status">
+                    <Form.Item
+                        name="Email"
+                        label="Email"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập Email!' },
+                            { validator: validateEmail },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
-
-                    <Button htmlType='submit'>OK</Button>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                    </Form.Item>
                 </Form>
             </Modal>
             <Modal
@@ -214,31 +257,6 @@ function CustomerComponent() {
                     </div>
                 )}
             </Modal>
-            <Modal title="Chỉnh sửa" visible={isModalUpdateOpen}  footer={null}>
-            <Form
-                    form={formUpdate}
-                    onFinish={onHandleUpdate}
-                    style={{ maxWidth: 600 }}
-                >
-                    <Form.Item name="FirstName" label="FirstName" >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="LastName"label="LastName" >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="Phone" label="Phone" >
-                        <InputNumber />
-                    </Form.Item>
-                    <Form.Item name="Email" label="Email" >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="Status" label="Status">
-                        <Input />
-                    </Form.Item>
-
-                    <Button htmlType='submit'>OK</Button>
-                </Form>
-            </Modal>
             <Table
                 columns={columns}
                 dataSource={data}
@@ -246,5 +264,4 @@ function CustomerComponent() {
         </div>
     );
 }
-
 export default CustomerComponent;
