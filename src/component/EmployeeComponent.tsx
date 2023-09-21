@@ -170,7 +170,6 @@ function EmployeeComponent() {
     const handleDelete = (record: any) => {
         const newData = data.filter((item) => item! == record);
         setData(newData);
-
     }
 
 
