@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Table, Button, Popconfirm, Form, InputNumber, Input } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { ICustomer } from '../interfaces/customer';
+import customerService from '../apis/Customer';
 function CustomerComponent() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRow, setSelectedRow] = useState<SelectedRowType | null>(null);
@@ -11,85 +13,66 @@ function CustomerComponent() {
     const [form] = Form.useForm();
     const [formUpdate] = Form.useForm();
     interface SelectedRowType {
-        CustomerID: number;
-        FirstName: string;
-        LastName: string;
-        Phone: string;
-        Email: string;
-        Status: string;
-        CreateDate: string;
+        customerID: number,
+        firstName: string,
+        lastName: string,
+        email: string,
+        phoneNumber: number,
+        status: boolean,
+        orders: null
     }
-    const [data, setData] = useState([
-        {
-            CustomerID: "0021",
-            FirstName: "John Joe",
-            LastName: "Hat",
-            Email: "john@example.com",
-            Phone: "0941399432",
-            Status: "Chờ xử lý",
-            CreateDate: "18/08/2017",
-        },
-        {
-            CustomerID: "0022",
-            FirstName: "John Joe",
-            LastName: "Hat",
-            Email: "john@example.com",
-            Phone: "0941399432",
-            Status: "Chờ xử lý",
-            CreateDate: "18/08/2017",
-        },
-        {
-            CustomerID: "0023",
-            FirstName: "John Joe",
-            LastName: "Hat",
-            Email: "john@example.com",
-            Phone: "0941399432",
-            Status: "Chờ xử lý",
-            CreateDate: "18/08/2017",
-        },
-        {
-            CustomerID: "0024",
-            FirstName: "John Joe",
-            LastName: "Hat",
-            Email: "john@example.com",
-            Phone: "0941399432",
-            Status: "Chờ xử lý",
-            CreateDate: "18/08/2017",
-        },
-    ]);
+    
+    const [data, setData] = useState<ICustomer[]>([]);
+
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const{data} = await customerService.getList();
+                setData(data);
+
+                console.log(data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getData();
+    }, [])
+    
+
+
 
 
     const columns = [
         {
             title: "CustomerID",
-            dataIndex: "CustomerID",
+            dataIndex: "customerID",
             render: (_: any, record: any) => <>
-                <a onClick={() => handleShowView(record)}>{record.CustomerID}</a>
+                <a onClick={() => handleShowView(record)}>{record.customerID}</a>
             </>,
         },
         {
             title: "Họ",
-            dataIndex: "FirstName",
+            dataIndex: "firstName",
         },
         {
             title: "Tên",
-            dataIndex: "LastName",
+            dataIndex: "lastName",
         },
         {
             title: "Điện thoại",
-            dataIndex: "Phone",
+            dataIndex: "phoneNumber",
         },
         {
             title: "Email",
-            dataIndex: "Email",
+            dataIndex: "email",
         },
         {
             title: "Trạng Thái",
-            dataIndex: "Status",
+            dataIndex: "status",
         },
         {
             title: "Ngày tạo",
-            dataIndex: "CreateDate",
+            dataIndex: "order",
         },
         {
             title: "Action",
@@ -126,7 +109,7 @@ function CustomerComponent() {
 
     // Xóa 
     const handleDelete = (item: any) => {
-        const newData = data.filter((dataItem) => dataItem.CustomerID !== item.CustomerID);
+        const newData = data.filter((dataItem) => dataItem.customerID !== item.customerID);
         setData(newData);
     };
     const handleDeleteCancel = () => {
@@ -137,11 +120,11 @@ function CustomerComponent() {
         setIsModalOpen(true);
         setUserUpdate(record)
         form.setFieldsValue({
-            FirstName: record.FirstName,
-            LastName: record.LastName,
-            Phone: record.Phone,
-            Email: record.Email,
-            Status: record.Status,
+            FirstName: record.firstName,
+            LastName: record.lastName,
+            Phone: record.phoneNumber,
+            Email: record.email,
+            Status: record.status,
         })
 
     };
@@ -154,6 +137,8 @@ function CustomerComponent() {
         setIsView(true);
     };
     const onHandleCreate = (value: any) => {
+
+
         setData(prev => [...prev, value])
         setIsModalOpen(false)
         form.resetFields();
@@ -190,13 +175,12 @@ function CustomerComponent() {
             <Button type="primary" onClick={showModal}>
                 Thêm mới<PlusOutlined />
             </Button>
-            <Modal title="Thêm mới" visible={isModalOpen} onOk={handleCreatedOk} onCancel={handleCreateCancel} footer={null}>
+            <Modal title="Thêm mới" open={isModalOpen} onOk={handleCreatedOk} onCancel={handleCreateCancel} footer={null}>
                 <Form form={form} onFinish={onHandleCreate}>
                     <Form.Item
                         name="FirstName"
-                        label="FirstName"
+                        label="firstName"
                         rules={[
-                            { required: true, message: 'Vui lòng nhập FirstName!' },
                             { validator: validateName },
                         ]}
                     >
@@ -204,9 +188,8 @@ function CustomerComponent() {
                     </Form.Item>
                     <Form.Item
                         name="LastName"
-                        label="LastName"
+                        label="lastName"
                         rules={[
-                            { required: true, message: 'Vui lòng nhập LastName!' },
                             { validator: validateName },
                         ]}
                     >
@@ -214,9 +197,8 @@ function CustomerComponent() {
                     </Form.Item>
                     <Form.Item
                         name="Phone"
-                        label="Phone"
+                        label="phoneNumber"
                         rules={[
-                            { required: true, message: 'Vui lòng nhập số điện thoại!' },
                             { validator: validatePhone },
                         ]}
                     >
@@ -224,9 +206,8 @@ function CustomerComponent() {
                     </Form.Item>
                     <Form.Item
                         name="Email"
-                        label="Email"
+                        label="email"
                         rules={[
-                            { required: true, message: 'Vui lòng nhập Email!' },
                             { validator: validateEmail },
                         ]}
                     >
@@ -247,13 +228,12 @@ function CustomerComponent() {
             >
                 {selectedRow && (
                     <div>
-                        <p>CustomerID: {selectedRow.CustomerID}</p>
-                        <p>Họ: {selectedRow.FirstName}</p>
-                        <p>Tên: {selectedRow.LastName}</p>
-                        <p>Điện thoại: {selectedRow.Phone}</p>
-                        <p>Email: {selectedRow.Email}</p>
-                        <p>Trạng Thái: {selectedRow.Status}</p>
-                        <p>Ngày tạo: {selectedRow.CreateDate}</p>
+                        <p>CustomerID: {selectedRow.customerID}</p>
+                        <p>Họ: {selectedRow.firstName}</p>
+                        <p>Tên: {selectedRow.lastName}</p>
+                        <p>Điện thoại: {selectedRow.phoneNumber}</p>
+                        <p>Email: {selectedRow.email}</p>
+                        <p>Trạng Thái: {selectedRow.status}</p>
                     </div>
                 )}
             </Modal>
