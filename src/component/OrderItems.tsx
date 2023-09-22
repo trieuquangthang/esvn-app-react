@@ -1,235 +1,269 @@
 import React, { useState } from 'react';
-import { Modal, Table, Button, Popconfirm, Form, InputNumber, Input, } from 'antd';
+import { Modal, Table, Button, Popconfirm, Form, InputNumber, Input } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import type { ColumnsType, } from 'antd/es/table';
-import { Link } from 'react-router-dom';
+function OrderItem() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedRow, setSelectedRow] = useState<SelectedRowType | null>(null);
+    const [userUpdate, setUserUpdate] = useState<any>();
+    const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+    const [showEdit, setShowEdit] = useState(false);
+    const [isView, setIsView] = useState(false);
+    const [form] = Form.useForm();
+    const [formUpdate] = Form.useForm();
+    interface SelectedRowType {
+        OrderItemID: number;
+        FirstName: string;
+        LastName: string;
+        Phone: string;
+        Email: string;
+        Status: string;
+        CreateDate: string;
+    }
+    const [data, setData] = useState(
+        [
+            {
+                OrderItemID: "0021",
+                FirstName: "John Joe",
+                LastName: "Hat",
+                Email: "john@example.com",
+                Phone: "0941399432",
+                Status: "Chờ xử lý",
+                CreateDate: "18/08/2017",
+
+            },
+            {
+                OrderItemID: "0021",
+                FirstName: "John Joe",
+                LastName: "Hat",
+                Email: "john@example.com",
+                Phone: "0941399432",
+                Status: "Chờ xử lý",
+                CreateDate: "18/08/2017",
+            },
+            {
+                OrderItemID: "0021",
+                FirstName: "John Joe",
+                LastName: "Hat",
+                Email: "john@example.com",
+                Phone: "0941399432",
+                Status: "Chờ xử lý",
+                CreateDate: "18/08/2017",
+            },
+            {
+                OrderItemID: "0021",
+                FirstName: "John Joe",
+                LastName: "Hat",
+                Email: "john@example.com",
+                Phone: "0941399432",
+                Status: "Chờ xử lý",
+                CreateDate: "18/08/2017",
+            }
+        ]);
 
 
-function OrderItems() {
+    const columns = [
+        {
+            title: "OrderItemID",
+            dataIndex: "OrderItemID",
+            render: (_: any, record: any) => <>
+                <a onClick={() => handleShowView(record)}>{record.OrderItemID}</a>
+            </>,
+        },
+        {
+            title: "Họ",
+            dataIndex: "FirstName",
+        },
+        {
+            title: "Tên",
+            dataIndex: "LastName",
+        },
+        {
+            title: "Điện thoại",
+            dataIndex: "Phone",
+        },
+        {
+            title: "Email",
+            dataIndex: "Email",
+        },
+        {
+            title: "Trạng Thái",
+            dataIndex: "Status",
+        },
+        {
+            title: "Ngày tạo",
+            dataIndex: "CreateDate",
+        },
+        {
+            title: "Action",
+            dataIndex: "action",
+            render: (_: any, record: any) => (
+                <div className="action">
+                    <EditOutlined onClick={() => handleEdit(record)} />
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+                    <Popconfirm
+                        title="Delete the task"
+                        description="Are you sure to delete this task?"
+                        onConfirm={() => handleDelete(record)}
+                        onCancel={handleDeleteCancel}
+                        okText="Delete"
+                        cancelText="Cancel"
+                    >
+                        <DeleteOutlined />
+                    </Popconfirm>
+                </div>
+            ),
+        },
+    ];
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    // Thêm mới 
+    const handleCreatedOk = () => {
+        // setData([...data, item]);
+        setIsModalOpen(false);
+    };
+    const handleCreateCancel = () => {
+        setIsModalOpen(false)
+    }
 
-  // sử dụng form để quản lý dữ liệu
-  const [form] = Form.useForm(
+    // Xóa 
+    const handleDelete = (item: any) => {
+        const newData = data.filter((dataItem) => dataItem.OrderItemID !== item.OrderItemID);
+        setData(newData);
+    };
+    const handleDeleteCancel = () => {
+    }
+    // Chỉnh sửa 
+    const handleEdit = (record: any) => {
+        console.log()
+        setIsModalOpen(true);
+        setUserUpdate(record)
+        form.setFieldsValue({
+            FirstName: record.FirstName,
+            LastName: record.LastName,
+            Phone: record.Phone,
+            Email: record.Email,
+            Status: record.Status,
+        })
 
-  );
+    };
+    // Xem
+    const handleViewCancel = () => {
+        setIsView(false);
+    }
+    const handleShowView = (record: any) => {
+        setSelectedRow(record);
+        setIsView(true);
+    };
+    const onHandleCreate = (value: any) => {
+        setData(prev => [...prev, value])
+        setIsModalOpen(false)
+        form.resetFields();
+    }
+    const validateName = (rule: any, value: any) => {
+        if (!value) {
+            return Promise.reject('Vui lòng nhập tên!');
+        } else if (/\d/.test(value)) {
+            return Promise.reject('Tên không thể chứa chữ số!');
+        }
+        return Promise.resolve();
+    };
 
-  // Dữ liệu của bảng
-  const [data, setData] = useState(
-    [
-      {
-        key: '1',
-        stt: 1,
-        orderItemID: 1,
-        oderID: 1,
-        productID: 1,
-        quantity: 1,
-        unitprice: 50000,
-        createdDate: 15 / 9 / 2023,
-        createdBy: 'ĐứcTQ',
+    const validateEmail = (rule: any, value: any) => {
+        if (!value) {
+            return Promise.reject('Vui lòng nhập email!');
+        } else if (!/^\S+@\S+\.\S+$/.test(value)) {
+            return Promise.reject('Email không hợp lệ!');
+        }
+        return Promise.resolve();
+    };
 
-      },
-      {
-        key: '1',
-        stt: 1,
-        orderItemID: 1,
-        oderID: 1,
-        productID: 1,
-        quantity: 1,
-        unitprice: 50000,
-        createdDate: 15 / 9 / 2023,
-        createdBy: 'ĐứcTQ',
-      },
-      {
-        key: '1',
-        stt: 1,
-        orderItemID: 1,
-        oderID: 1,
-        productID: 1,
-        quantity: 1,
-        unitprice: 50000,
-        createdDate: 15 / 9 / 2023,
-        createdBy: 'ĐứcTQ',
-      },
-      {
-        key: '1',
-        stt: 1,
-        orderItemID: 1,
-        oderID: 1,
-        productID: 1,
-        quantity: 1,
-        unitprice: 50000,
-        createdDate: 15 / 9 / 2023,
-        createdBy: 'ĐứcTQ',
-      }
-    ]
-  );
-
-  interface DataType {
-    key: React.Key;
-    stt: number;
-    orderItemID: number,
-    oderID: number,
-    productID: number,
-    quantity: number,
-    unitprice: number,
-
-  }
-
-  const columns: ColumnsType<DataType> = [
-    {
-      title: 'STT',
-      dataIndex: 'stt',
-    },
-    {
-      title: 'OrderItemID',
-      dataIndex: 'orderItemID',
-      render: (_, record) => <>
-        <a onClick={() => showModal()}>{record.orderItemID}</a>
-      </>,
-    },
-    {
-      title: 'OrderID',
-      dataIndex: 'orderID',
-    },
-    {
-      title: 'ProductID',
-      dataIndex: 'productID',
-    },
-    {
-      title: 'Quantity',
-      dataIndex: 'quantity',
-
-    },
-    {
-      title: 'UnitPrice',
-      dataIndex: 'unitprice',
-
-    },
-    {
-      title: 'CreatedDate',
-      dataIndex: 'createdDate',
-    },
-    {
-      title: 'CreatedBy',
-      dataIndex: 'createdBy',
-    },
-    {
-      title: 'Actions',
-      dataIndex: '',
-      render: (_: any, record: any) => (
-        <div className="action" style={{ display: 'flex' }}>
-          <div>
+    const validatePhone = (rule: any, value: any) => {
+        if (!value) {
+            return Promise.reject('Vui lòng nhập số điện thoại!');
+        } else if (!/^[0-9]{10}$/.test(value)) {
+            return Promise.reject('Số điện thoại không hợp lệ!');
+        }
+        return Promise.resolve();
+    };
+    return (
+        <div className="main-body">
+            <h1>OrderItem</h1>
             <Button type="primary" onClick={showModal}>
-              Edit
+                Thêm mới<PlusOutlined />
             </Button>
-          </div>
-
-          <Popconfirm
-            title="Delete the task"
-            description="Are you sure to delete this task?"
-            onConfirm={() => handleDelete(record)}
-            okText="Delete"
-            cancelText="Cancel"
-          >
-            <Button type="primary" danger><DeleteOutlined className="delete-btn" /></Button>
-          </Popconfirm>
-
+            <Modal title="Thêm mới" visible={isModalOpen} onOk={handleCreatedOk} onCancel={handleCreateCancel} footer={null}>
+                <Form form={form} onFinish={onHandleCreate}>
+                    <Form.Item
+                        name="FirstName"
+                        label="FirstName"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập FirstName!' },
+                            { validator: validateName },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="LastName"
+                        label="LastName"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập LastName!' },
+                            { validator: validateName },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="Phone"
+                        label="Phone"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập số điện thoại!' },
+                            { validator: validatePhone },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="Email"
+                        label="Email"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập Email!' },
+                            { validator: validateEmail },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal
+                title="Thông Tin Chi Tiết"
+                visible={isView}
+                onCancel={handleViewCancel}
+                footer={null}
+            >
+                {selectedRow && (
+                    <div>
+                        <p>OrderItem: {selectedRow.OrderItemID}</p>
+                        <p>Họ: {selectedRow.FirstName}</p>
+                        <p>Tên: {selectedRow.LastName}</p>
+                        <p>Điện thoại: {selectedRow.Phone}</p>
+                        <p>Email: {selectedRow.Email}</p>
+                        <p>Trạng Thái: {selectedRow.Status}</p>
+                        <p>Ngày tạo: {selectedRow.CreateDate}</p>
+                    </div>
+                )}
+            </Modal>
+            <Table
+                columns={columns}
+                dataSource={data}
+            />
         </div>
-      ),
-    },
-  ];
-  const handleDelete = (record: any) => {
-    const newData = data.filter((item) => item! == record);
-    setData(newData);
-
-  }
-
-
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-  // xử lý dữ liệu khi nhấn nút lưu trong modal
-  const handleOk = () => {
-    form.validateFields().then((values) => {
-      //Lấy dữ liệu từ Form và thêm vào mảng data 
-      const newData = [...data, values];
-      setData(newData);
-      //Đóng modal và làm rỗng Form
-      setIsModalOpen(false);
-      form.resetFields();
-    });
-  };
-  //xử lý đóng modal khi nhấn nút hủy
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-
-
-  const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 16 },
-  };
-
-
-  const validateMessages = {
-    required: '${label} is required!',
-    types: {
-      email: '${label} is not a valid email!',
-      number: '${label} is not a valid number!',
-    },
-    number: {
-      range: '${label} must be between ${min} and ${max}',
-    },
-  };
-
-
-  const onFinish = (values: any) => {
-    console.log(values);
-  };
-  return (
-    <>
-      <h1>Order Item</h1>
-      <Button type="primary" onClick={showModal}>
-        Thêm Mới <PlusOutlined />
-      </Button>
-      <Modal title="Thêm mới" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <Form
-          {...layout}
-          name="nest-messages"
-          onFinish={onFinish}
-          style={{ maxWidth: 600 }}
-          validateMessages={validateMessages}
-        >
-          <Form.Item name={['user', 'orderItemID']} label="OrderItemID" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name={['user', 'orderID']} label="OrderID" rules={[{ type: 'email' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name={['user', 'productID']} label="ProductID" rules={[{ type: 'number', min: 0, max: 99 }]}>
-            <InputNumber />
-          </Form.Item>
-          <Form.Item name={['user', 'quantity']} label="Quantity" >
-            <Input />
-          </Form.Item>
-          <Form.Item name={['user', 'unitprice']} label="Unitprice">
-            <Input />
-          </Form.Item>
-          <Form.Item name={['user', 'createDate']} label="CreateDate">
-            <Input />
-          </Form.Item>
-          <Form.Item name={['user', 'createBy']} label="CreateBy">
-            <Input />
-          </Form.Item>
-          <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-          </Form.Item>
-        </Form>
-      </Modal>
-      <Table dataSource={data} columns={columns}>
-      </Table>
-    </>)
+    );
 }
-export default OrderItems;
+export default OrderItem;

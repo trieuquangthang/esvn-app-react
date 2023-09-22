@@ -1,146 +1,213 @@
-
 import React, { useState } from 'react';
-import { Modal, Table, Button, Popconfirm, Form, InputNumber, Input } from 'antd';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { Modal, Table, Button, Popconfirm, Form, Input, } from 'antd';
+import { DeleteOutlined, EditOutlined, PlusOutlined, } from '@ant-design/icons';
+import { Divider } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 
-function Test() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-    const [isCreated, setIsCreated] = useState(false);
-    const [isView, setIsView] = useState(false);
+
+const Tests = () => {
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [formMode, setFormMode] = useState("add"); // "add" hoặc "edit"
+    const [editingItem, setEditingItem] = useState<any>(null);
+    const [formData, setFormData] = useState({
+        // Khai báo dữ liệu của form
+        CustomerID: "",
+        FirstName: "",
+        LastName: "",
+        Phone: "",
+        Email: "",
+        Address: "",
+
+    });
+    interface DataType {
+        CustomerID: string;
+        FirstName: string;
+        LastName: string;
+        Phone: string;
+        Email: string;
+        Address: string;
+      }
+    const columns: ColumnsType<DataType> = [
+        {
+          title: 'CustomerID',
+          dataIndex: 'CustomerID',
+        },
+        {
+          title: 'FirstName',
+          dataIndex: 'FirstName',
+        },
+        {
+          title: 'LastName',
+          dataIndex: 'LastName',
+        },
+        {
+            title: 'Phone',
+            dataIndex: 'Phone',
+        },
+        {
+            title: 'Email',
+            dataIndex: 'Email',
+        },
+        {
+            title: 'Address',
+            dataIndex: 'Address',
+        },
+        
+      ];
     const [data, setData] = useState([
         {
-            id: 1,
-            stt: 1,
-            ID: "0021",
-            Tên: "John Joe",
-            SĐT: "0941399432",
-            Tuổi: "Chờ xử lý",
-            Address: "18/08/2017",
+            CustomerID: "0024",
+            FirstName: "John Joe",
+            LastName: "Hat",
+            Email: "john@example.com",
+            Phone: "0941399432",
+            Address: "Hà Nội"
         },
         {
-            id: 2,
-            stt: 2,
-            ID: "0021",
-            Tên: "John Joe",
-            SĐT: "0941399432",
-            Tuổi: "Chờ xử lý",
-            Address: "18/08/2017",
+            CustomerID: "0024",
+            FirstName: "John Joe",
+            LastName: "Hat",
+            Email: "john@example.com",
+            Phone: "0941399432",
+            Address: "Hà Nội"
         },
         {
-            id: 3,
-            stt: 3,
-            ID: "0021",
-            Tên: "John Joe",
-            SĐT: "0941399432",
-            Tuổi: "Chờ xử lý",
-            Address: "18/08/2017",
+            CustomerID: "0024",
+            FirstName: "John Joe",
+            LastName: "Hat",
+            Email: "john@example.com",
+            Phone: "0941399432",
+            Address: "Hà Nội"
+
         },
         {
-            id: 4,
-            stt: 4,
-            ID: "0021",
-            Tên: "John Joe",
-            SĐT: "0941399432",
-            Tuổi: "Chờ xử lý",
-            Address: "18/08/2017",
+            CustomerID: "0024",
+            FirstName: "John Joe",
+            LastName: "Hat",
+            Email: "john@example.com",
+            Phone: "0941399432",
+            Address: "Hà Nội"
         },
     ]);
+    const handleEdit = (item: any) => {
+        setEditingItem(item);
+        showModal("edit");
+    };
 
-    const handleEdit = () => {
-        setIsModalOpen(true)
+    const showModal = (mode: any,) => {
+        if (mode === "edit" && editingItem) {
+            setFormData({
+                CustomerID: editingItem.CustomerID,
+                FirstName: editingItem.FirstName,
+                LastName: editingItem.LastName,
+                Phone: editingItem.Phone,
+                Email: editingItem.Email,
+                Address: editingItem.Address,
+                // ... reset dữ liệu cho các trường khác
+            });
+        } else {
+            // Nếu là chế độ thêm mới, reset formData
+            setFormData({
+                CustomerID: "",
+                FirstName: "",
+                LastName: "",
+                Phone: "",
+                Email: "",
+                Address: "",
+                // ... reset dữ liệu cho các trường khác
+            });
+        }
+    
+        setIsModalVisible(true);
+        setFormMode(mode);
     };
-    const handleDelete = () => {
-        setIsDeleteOpen(true)
+
+    const handleOk = () => {
+        if (formMode === "add") {
+            // Xử lý thêm mới
+            const newItem = {
+                CustomerID: formData.CustomerID,
+                FirstName: formData.FirstName,
+                LastName: formData.LastName,
+                Phone: formData.Phone,
+                Email: formData.Email,
+                Address: formData.Address,
+                // ... thiết lập giá trị cho các trường khác
+            };
+            setData([...data, newItem]);
+        } else if (formMode === "edit" && editingItem) {
+            // Xử lý chỉnh sửa
+            const updatedData = data.map((item) => {
+                if (item.CustomerID === editingItem.CustomerID) {
+                    return {
+                        ...item,
+                        CustomerID: formData.CustomerID,
+                        FirstName: formData.FirstName,
+                        LastName: formData.LastName,
+                        Phone: formData.Phone,
+                        Email: formData.Email,
+                        Address: formData.Address,
+                        // ... thiết lập giá trị cho các trường khác
+                    };
+                }
+                return item;
+            });
+            setData(updatedData);
+        }
+    
+        setIsModalVisible(false);
+        setEditingItem(null);
     };
-    const handleEditCancel = () => {
-        setIsModalOpen(false)
-        setIsDeleteOpen(false)
-    }
-    const handleEditOK = () => {
-        setIsModalOpen(false)
-    }
-    const handleDeleteOk = () => {
-        setIsDeleteOpen(false)
-    }
-    const handleCreatedCancle = () => {
-        setIsCreated(false)
-    }
-    const handleCreatedOk = () => {
-        setIsCreated(false)
-    }
-    const handleCreated = () => {
-        setIsCreated(true)
-    }
-    const handleViewCancel = () => {
-        setIsView(false)
-    }
-    const handleView = () => {
-        setIsView(true)
-    }
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
     return (
-        <>
-            <button onClick={() => handleCreated()}>Thêm mới</button>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên</th>
-                        <th>SĐT</th>
-                        <th>Tuổi</th>
-                        <th>Địa chỉ</th>
-                        <th>Ngày tạo</th>
-                        <th>Quản lý</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map((item) => (
-                        <tr key={item.id}>
-                            <td>{item.stt}</td>
-                            <td>{item.ID}</td>
-                            <td>{item.Tên}</td>
-                            <td>{item.SĐT}</td>
-                            <td>{item.Tuổi}</td>
-                            <td>{item.Address}</td>
-                            <td><button onClick={() => handleEdit()}>Edit</button><button onClick={() => handleDelete()}>Delete</button><button onClick={() => handleView()}>View</button></td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <div>
+            <Button onClick={() => showModal("add")}>Thêm mới</Button>
+            <Button onClick={() => showModal("edit")}>Chỉnh sửa</Button>
             <Modal
-                title="Thêm mới"
-                visible={isCreated}
-                onCancel={handleCreatedCancle}
-                onOk={handleCreatedOk}
+                title={formMode === "add" ? "Thêm mới" : "Chỉnh sửa"}
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
             >
-                Ok
-            </Modal>
+                <Input
+                    placeholder="CustomerID"
+                    value={formData.CustomerID}
+                    onChange={(e) => setFormData({ ...formData, CustomerID: e.target.value })}
+                />
+                <Input
+                    placeholder="First Name"
+                    value={formData.FirstName}
+                    onChange={(e) => setFormData({ ...formData, FirstName: e.target.value })}
+                />
+                <Input
+                    placeholder="Last Name"
+                    value={formData.LastName}
+                    onChange={(e) => setFormData({ ...formData, LastName: e.target.value })}
+                />
+                <Input
+                    placeholder="Phone"
+                    value={formData.Phone}
+                    onChange={(e) => setFormData({ ...formData, Phone: e.target.value })}
+                />
+                <Input
+                    placeholder="Email"
+                    value={formData.Email}
+                    onChange={(e) => setFormData({ ...formData, Email: e.target.value })}
+                />
+                <Input
+                    placeholder="Address"
+                    value={formData.Address}
+                    onChange={(e) => setFormData({ ...formData, Address: e.target.value })}
+                />
 
-            <Modal
-                title="Sửa"
-                visible={isModalOpen}
-                onCancel={handleEditCancel}
-                onOk={handleEditOK}
-            >
-                Ok
             </Modal>
-            <Modal
-                title="Xóa"
-                visible={isDeleteOpen}
-                onCancel={handleEditCancel}
-                onOk={handleDeleteOk}
-            >
-                Ok
-            </Modal>
-            <Modal
-                title="Chỉ xem"
-                visible={isView}
-                onCancel={handleViewCancel}
-                footer={null}
-            >
-                Ok
-            </Modal>
-        </>
-    )
-}
-export default Test;
+            <Table columns={columns} dataSource={data} size="small" />
+        </div>
+    );
+};
+
+export default Tests;

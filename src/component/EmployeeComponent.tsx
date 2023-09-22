@@ -1,256 +1,269 @@
-import React, { useState } from "react";
-import {
-    Button,
-    Modal,
-    Input,
-    Table,
-    Popconfirm,
-} from "antd";
-import {
-    DeleteOutlined,
-    PlusOutlined,
-} from "@ant-design/icons";
-import { Form, InputNumber, } from 'antd';
-import type { ColumnsType, } from 'antd/es/table';
-
-
+import React, { useState } from 'react';
+import { Modal, Table, Button, Popconfirm, Form, InputNumber, Input } from 'antd';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 function EmployeeComponent() {
-
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
-
-    // sử dụng form để quản lý dữ liệu
-    const [form] = Form.useForm(
-
-    );
-
-    // Dữ liệu của bảng
+    const [selectedRow, setSelectedRow] = useState<SelectedRowType | null>(null);
+    const [userUpdate, setUserUpdate] = useState<any>();
+    const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+    const [showEdit, setShowEdit] = useState(false);
+    const [isView, setIsView] = useState(false);
+    const [form] = Form.useForm();
+    const [formUpdate] = Form.useForm();
+    interface SelectedRowType {
+        EmployeeID: number;
+        FirstName: string;
+        LastName: string;
+        Phone: string;
+        Email: string;
+        Status: string;
+        CreateDate: string;
+    }
     const [data, setData] = useState(
         [
             {
-                key: '1',
-                stt: 1,
-                employeeID: 1,
-                name: 'Triệu Quang Đức',
-                age: 18,
-                phoneNumber: '0941399432',
-                email: 'ductq@gmail.com',
-                status: 'Đang làm việc',
-                address: 'Xóm liều, Hà Nội 9',
-                createdDate: 15 / 9 / 2023,
-                createdBy: 'ĐứcTQ',
+                EmployeeID: "0021",
+                FirstName: "John Joe",
+                LastName: "Hat",
+                Email: "john@example.com",
+                Phone: "0941399432",
+                Status: "Chờ xử lý",
+                CreateDate: "18/08/2017",
 
             },
             {
-                key: '2',
-                stt: 2,
-                employeeID: 1,
-                name: 'Triệu Quang Đức',
-                age: 18,
-                phoneNumber: '0941399432',
-                email: 'ductq@gmail.com',
-                status: 'Đang làm việc',
-                address: 'Xóm liều, Hà Nội 9',
-                createdDate: 15 / 9 / 2023,
-                createdBy: 'ĐứcTQ',
+                EmployeeID: "0021",
+                FirstName: "John Joe",
+                LastName: "Hat",
+                Email: "john@example.com",
+                Phone: "0941399432",
+                Status: "Chờ xử lý",
+                CreateDate: "18/08/2017",
             },
             {
-                key: '3',
-                stt: 3,
-                employeeID: 1,
-                name: 'Triệu Quang Đức',
-                age: 18,
-                phoneNumber: '0941399432',
-                email: 'ductq@gmail.com',
-                status: 'Đang làm việc',
-                address: 'Xóm liều, Hà Nội 9',
-                createdDate: 15 / 9 / 2023,
-                createdBy: 'ĐứcTQ',
+                EmployeeID: "0021",
+                FirstName: "John Joe",
+                LastName: "Hat",
+                Email: "john@example.com",
+                Phone: "0941399432",
+                Status: "Chờ xử lý",
+                CreateDate: "18/08/2017",
             },
             {
-                key: '4',
-                stt: 4,
-                employeeID: 1,
-                name: 'Triệu Quang Đức',
-                age: 18,
-                phoneNumber: '0941399432',
-                email: 'ductq@gmail.com',
-                status: 'Đang làm việc',
-                address: 'Xóm liều, Hà Nội 9',
-                createdDate: 15 / 9 / 2023,
-                createdBy: 'ĐứcTQ',
+                EmployeeID: "0021",
+                FirstName: "John Joe",
+                LastName: "Hat",
+                Email: "john@example.com",
+                Phone: "0941399432",
+                Status: "Chờ xử lý",
+                CreateDate: "18/08/2017",
             }
-        ]
-    );
+        ]);
 
-    interface DataType {
-        key: React.Key;
-        stt: number;
-        employeeID: number,
-        name: string;
-        age: number;
-        phoneNumber: string;
-        email: string;
-        address: string;
 
-    }
-
-    const columns: ColumnsType<DataType> = [
+    const columns = [
         {
-            title: 'STT',
-            dataIndex: 'stt',
-        },
-
-        {
-            title: 'EmployeeID',
-            dataIndex: 'employeeID',
+            title: "EmployeeID",
+            dataIndex: "EmployeeID",
             render: (_: any, record: any) => <>
-                <a onClick={() => showModal()}>{record.employeeID}</a>
+                <a onClick={() => handleShowView(record)}>{record.EmployeeID}</a>
             </>,
         },
         {
-            title: 'Name',
-            dataIndex: 'name',
+            title: "Họ",
+            dataIndex: "FirstName",
         },
         {
-            title: 'Age',
-            dataIndex: 'age',
+            title: "Tên",
+            dataIndex: "LastName",
         },
         {
-            title: 'Phone',
-            dataIndex: 'phoneNumber',
-
+            title: "Điện thoại",
+            dataIndex: "Phone",
         },
         {
-            title: 'Email',
-            dataIndex: 'email',
-
+            title: "Email",
+            dataIndex: "Email",
         },
         {
-            title: 'Address',
-            dataIndex: 'address',
+            title: "Trạng Thái",
+            dataIndex: "Status",
         },
         {
-            title: 'Status',
-            dataIndex: 'status',
+            title: "Ngày tạo",
+            dataIndex: "CreateDate",
         },
         {
-            title: 'CreateDate',
-            dataIndex: 'creatDate',
-        },
-        {
-            title: 'CreateBy',
-            dataIndex: 'creatBy',
-        },
-        {
-            title: 'Actions',
-            dataIndex: '',
+            title: "Action",
+            dataIndex: "action",
             render: (_: any, record: any) => (
-                <div className="action" style={{ display: 'flex' }}>
-                    <div>
-                        <Button type="primary" onClick={showModal}>
-                            Edit
-                        </Button>
-                    </div>
+                <div className="action">
+                    <EditOutlined onClick={() => handleEdit(record)} />
 
                     <Popconfirm
                         title="Delete the task"
                         description="Are you sure to delete this task?"
                         onConfirm={() => handleDelete(record)}
+                        onCancel={handleDeleteCancel}
                         okText="Delete"
                         cancelText="Cancel"
                     >
-                        <Button type="primary" danger><DeleteOutlined className="delete-btn" /></Button>
+                        <DeleteOutlined />
                     </Popconfirm>
-
                 </div>
             ),
         },
     ];
-    const handleDelete = (record: any) => {
-        const newData = data.filter((item) => item! == record);
-        setData(newData);
-    }
-
-
     const showModal = () => {
         setIsModalOpen(true);
     };
-    // xử lý dữ liệu khi nhấn nút lưu trong modal
-    const handleOk = () => {
-        form.validateFields().then((values) => {
-            //Lấy dữ liệu từ Form và thêm vào mảng data 
-            const newData = [...data, values];
-            setData(newData);
-            //Đóng modal và làm rỗng Form
-            setIsModalOpen(false);
-            form.resetFields();
-        });
-    };
-    //xử lý đóng modal khi nhấn nút hủy
-    const handleCancel = () => {
+    // Thêm mới 
+    const handleCreatedOk = () => {
+        // setData([...data, item]);
         setIsModalOpen(false);
     };
+    const handleCreateCancel = () => {
+        setIsModalOpen(false)
+    }
 
+    // Xóa 
+    const handleDelete = (item: any) => {
+        const newData = data.filter((dataItem) => dataItem.EmployeeID !== item.EmployeeID);
+        setData(newData);
+    };
+    const handleDeleteCancel = () => {
+    }
+    // Chỉnh sửa 
+    const handleEdit = (record: any) => {
+        console.log()
+        setIsModalOpen(true);
+        setUserUpdate(record)
+        form.setFieldsValue({
+            FirstName: record.FirstName,
+            LastName: record.LastName,
+            Phone: record.Phone,
+            Email: record.Email,
+            Status: record.Status,
+        })
 
-
-    const layout = {
-        labelCol: { span: 8 },
-        wrapperCol: { span: 16 },
+    };
+    // Xem
+    const handleViewCancel = () => {
+        setIsView(false);
+    }
+    const handleShowView = (record: any) => {
+        setSelectedRow(record);
+        setIsView(true);
+    };
+    const onHandleCreate = (value: any) => {
+        setData(prev => [...prev, value])
+        setIsModalOpen(false)
+        form.resetFields();
+    }
+    const validateName = (rule: any, value: any) => {
+        if (!value) {
+            return Promise.reject('Vui lòng nhập tên!');
+        } else if (/\d/.test(value)) {
+            return Promise.reject('Tên không thể chứa chữ số!');
+        }
+        return Promise.resolve();
     };
 
-
-    const validateMessages = {
-        required: '${label} is required!',
-        types: {
-            email: '${label} is not a valid email!',
-            number: '${label} is not a valid number!',
-        },
-        number: {
-            range: '${label} must be between ${min} and ${max}',
-        },
+    const validateEmail = (rule: any, value: any) => {
+        if (!value) {
+            return Promise.reject('Vui lòng nhập email!');
+        } else if (!/^\S+@\S+\.\S+$/.test(value)) {
+            return Promise.reject('Email không hợp lệ!');
+        }
+        return Promise.resolve();
     };
 
-
-    const onFinish = (values: any) => {
-        console.log(values);
+    const validatePhone = (rule: any, value: any) => {
+        if (!value) {
+            return Promise.reject('Vui lòng nhập số điện thoại!');
+        } else if (!/^[0-9]{10}$/.test(value)) {
+            return Promise.reject('Số điện thoại không hợp lệ!');
+        }
+        return Promise.resolve();
     };
     return (
-        <>
-
+        <div className="main-body">
             <h1>Employee</h1>
             <Button type="primary" onClick={showModal}>
-                Thêm Mới <PlusOutlined />
+                Thêm mới<PlusOutlined />
             </Button>
-            <Modal title="Thêm mới" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <Form
-                    {...layout}
-                    name="nest-messages"
-                    onFinish={onFinish}
-                    style={{ maxWidth: 600 }}
-                    validateMessages={validateMessages}
-                >
-                    <Form.Item name={['user', 'name']} label="Name" rules={[{ required: true }]}>
+            <Modal title="Thêm mới" visible={isModalOpen} onOk={handleCreatedOk} onCancel={handleCreateCancel} footer={null}>
+                <Form form={form} onFinish={onHandleCreate}>
+                    <Form.Item
+                        name="FirstName"
+                        label="FirstName"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập FirstName!' },
+                            { validator: validateName },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item name={['user', 'email']} label="Email" rules={[{ type: 'email' }]}>
+                    <Form.Item
+                        name="LastName"
+                        label="LastName"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập LastName!' },
+                            { validator: validateName },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item name={['user', 'age']} label="Age" rules={[{ type: 'number', min: 0, max: 99 }]}>
-                        <InputNumber />
-                    </Form.Item>
-                    <Form.Item name={['user', 'phoneNumber']} label="Phone" >
+                    <Form.Item
+                        name="Phone"
+                        label="Phone"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập số điện thoại!' },
+                            { validator: validatePhone },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item name={['user', 'address']} label="Address">
+                    <Form.Item
+                        name="Email"
+                        label="Email"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập Email!' },
+                            { validator: validateEmail },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
                     </Form.Item>
                 </Form>
             </Modal>
-            <Table dataSource={data} columns={columns}>
-            </Table>
-        </>)
+            <Modal
+                title="Thông Tin Chi Tiết"
+                visible={isView}
+                onCancel={handleViewCancel}
+                footer={null}
+            >
+                {selectedRow && (
+                    <div>
+                        <p>Employee: {selectedRow.EmployeeID}</p>
+                        <p>Họ: {selectedRow.FirstName}</p>
+                        <p>Tên: {selectedRow.LastName}</p>
+                        <p>Điện thoại: {selectedRow.Phone}</p>
+                        <p>Email: {selectedRow.Email}</p>
+                        <p>Trạng Thái: {selectedRow.Status}</p>
+                        <p>Ngày tạo: {selectedRow.CreateDate}</p>
+                    </div>
+                )}
+            </Modal>
+            <Table
+                columns={columns}
+                dataSource={data}
+            />
+        </div>
+    );
 }
 export default EmployeeComponent;

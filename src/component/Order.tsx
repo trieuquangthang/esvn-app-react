@@ -1,239 +1,242 @@
 import React, { useState } from 'react';
 import { Modal, Table, Button, Popconfirm, Form, InputNumber, Input } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import type { ColumnsType } from 'antd/es/table';
-import { Link } from 'react-router-dom';
-
 function Order() {
-
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
-
-    // sử dụng form để quản lý dữ liệu
-    const [form] = Form.useForm(
-
-    );
-
-    // Dữ liệu của bảng
+    const [selectedRow, setSelectedRow] = useState<SelectedRowType | null>(null);
+    const [userUpdate, setUserUpdate] = useState<any>();
+    const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+    const [showEdit, setShowEdit] = useState(false);
+    const [isView, setIsView] = useState(false);
+    const [form] = Form.useForm();
+    const [formUpdate] = Form.useForm();
+    interface SelectedRowType {
+        OrderID: string;
+        CustomerID: string;
+        OrderDate: string;
+        Phone: string;
+        EmployeeSubmit: string;
+    }
     const [data, setData] = useState(
         [
             {
-                key: '1',
-                stt: 1,
-                orderID: 1,
-                CustomerID: 1,
-                orderDate: 'Triệu Quang Đức',
-                phoneNumber: '0941399432',
-                employeeSubmit: 'ductq@gmail.com',
-                orderChannel: "Online",
-                createdDate: 15 / 9 / 2023,
-                createdBy: 'ĐứcTQ',
+                OrderID: "1",
+                CustomerID: "1",
+                OrderDate: "1",
+                Phone: "0941399432",
+                EmployeeSubmit: "Đức",
 
             },
             {
-                key: '2',
-                stt: 2,
-                orderID: 1,
-                CustomerID: 1,
-                orderDate: 'Triệu Quang Đức',
-                phoneNumber: '0941399432',
-                employeeSubmit: 'ductq@gmail.com',
-                orderChannel: "Online",
-                createdDate: 15 / 9 / 2023,
-                createdBy: 'ĐứcTQ',
+                OrderID: "1",
+                CustomerID: "1",
+                OrderDate: "1",
+                Phone: "0941399432",
+                EmployeeSubmit: "Đức",
+
             },
             {
-                key: '3',
-                stt: 3,
-                orderID: 1,
-                CustomerID: 1,
-                orderDate: 'Triệu Quang Đức',
-                phoneNumber: '0941399432',
-                employeeSubmit: 'ductq@gmail.com',
-                orderChannel: "Online",
-                createdDate: 15 / 9 / 2023,
-                createdBy: 'ĐứcTQ',
+                OrderID: "1",
+                CustomerID: "1",
+                OrderDate: "1",
+                Phone: "0941399432",
+                EmployeeSubmit: "Đức",
+
             },
             {
-                key: '4',
-                stt: 4,
-                orderID: 1,
-                CustomerID: 1,
-                orderDate: 'Triệu Quang Đức',
-                phoneNumber: '0941399432',
-                employeeSubmit: 'ductq@gmail.com',
-                orderChannel: "Online",
-                createdDate: 15 / 9 / 2023,
-                createdBy: 'ĐứcTQ',
+                OrderID: "1",
+                CustomerID: "1",
+                OrderDate: "1",
+                Phone: "0941399432",
+                EmployeeSubmit: "Đức",
+
             }
-        ]
-    );
+        ]);
 
-    interface DataType {
-        key: React.Key;
-        stt: number;
-        orderID: number;
-        CustomerID: number;
-        orderDate: string;
-        phoneNumber: string;
-        employeeSubmit: string,
-        orderChannel: string;
 
-    }
-
-    const columns: ColumnsType<DataType> = [
+    const columns = [
         {
-            title: 'STT',
-            dataIndex: 'stt',
-        },
-        {
-            title: 'OrderID',
-            dataIndex: 'orderID',
-            render: (_, record) => <>
-                <a onClick={() => showModal()}>{record.CustomerID}</a>
+            title: "OrderID",
+            dataIndex: "OrderID",
+            render: (_: any, record: any) => <>
+                <a onClick={() => handleShowView(record)}>{record.OrderID}</a>
             </>,
         },
         {
-            title: 'CustomerID',
-            dataIndex: 'CustomerID',
-            render: (_, record) => <>
-                <a onClick={() => showModal()}>{record.CustomerID}</a>
-            </>,
+            title: "CustomerID",
+            dataIndex: "CustomerID",
         },
         {
-            title: 'OrderDate',
-            dataIndex: 'orderDate',
+            title: "OrderDate",
+            dataIndex: "OrderDate",
         },
         {
-            title: 'EmployeeSubmit',
-            dataIndex: 'employeeSubmit',
-
+            title: "Phone",
+            dataIndex: "Phone",
         },
         {
-            title: 'orderChannel',
-            dataIndex: 'OrderChannel',
+            title: "EmployeeSubmit",
+            dataIndex: "EmployeeSubmit",
         },
         {
-            title: 'CreateDate',
-            dataIndex: 'creatDate',
-        },
-        {
-            title: 'CreateBy',
-            dataIndex: 'creatBy',
-        },
-        {
-            title: 'Actions',
-            dataIndex: '',
+            title: "Action",
+            dataIndex: "action",
             render: (_: any, record: any) => (
-                <div className="action" style={{ display: 'flex' }}>
-                    <div>
-                        <Button type="primary" onClick={showModal}>
-                            Edit
-                        </Button>
-                    </div>
+                <div className="action">
+                    <EditOutlined onClick={() => handleEdit(record)} />
 
                     <Popconfirm
                         title="Delete the task"
                         description="Are you sure to delete this task?"
                         onConfirm={() => handleDelete(record)}
+                        onCancel={handleDeleteCancel}
                         okText="Delete"
                         cancelText="Cancel"
                     >
-                        <Button type="primary" danger><DeleteOutlined className="delete-btn" /></Button>
+                        <DeleteOutlined />
                     </Popconfirm>
-
                 </div>
             ),
         },
     ];
-    const handleDelete = (record: any) => {
-        const newData = data.filter((item) => item! == record);
-        setData(newData);
-
-    }
-
-
     const showModal = () => {
         setIsModalOpen(true);
     };
-    // xử lý dữ liệu khi nhấn nút lưu trong modal
-    const handleOk = () => {
-        form.validateFields().then((values) => {
-            //Lấy dữ liệu từ Form và thêm vào mảng data 
-            const newData = [...data, values];
-            setData(newData);
-            //Đóng modal và làm rỗng Form
-            setIsModalOpen(false);
-            form.resetFields();
-        });
-    };
-    //xử lý đóng modal khi nhấn nút hủy
-    const handleCancel = () => {
+    // Thêm mới 
+    const handleCreatedOk = () => {
+        // setData([...data, item]);
         setIsModalOpen(false);
     };
+    const handleCreateCancel = () => {
+        setIsModalOpen(false)
+    }
 
+    // Xóa 
+    const handleDelete = (item: any) => {
+        const newData = data.filter((dataItem) => dataItem.OrderID !== item.OrderID);
+        setData(newData);
+    };
+    const handleDeleteCancel = () => {
+    }
+    // Chỉnh sửa 
+    const handleEdit = (record: any) => {
+        console.log()
+        setIsModalOpen(true);
+        setUserUpdate(record)
+        form.setFieldsValue({
+            OrderID: record.OrderID,
+            CustomerID: record.CustomerID,
+            Phone: record.Phone,
+            OrderDate: record.OrderDate,
+            EmployeeSubmit: record.EmployeeSubmit,
+        })
 
-
-    const layout = {
-        labelCol: { span: 8 },
-        wrapperCol: { span: 16 },
+    };
+    // Xem
+    const handleViewCancel = () => {
+        setIsView(false);
+    }
+    const handleShowView = (record: any) => {
+        setSelectedRow(record);
+        setIsView(true);
+    };
+    const onHandleCreate = (value: any) => {
+        setData(prev => [...prev, value])
+        setIsModalOpen(false)
+        form.resetFields();
+    }
+    const validateName = (rule: any, value: any) => {
+        if (!value) {
+            return Promise.reject('Vui lòng nhập tên!');
+        } else if (/\d/.test(value)) {
+            return Promise.reject('Tên không thể chứa chữ số!');
+        }
+        return Promise.resolve();
     };
 
-
-    const validateMessages = {
-        required: '${label} is required!',
-        types: {
-            email: '${label} is not a valid email!',
-            number: '${label} is not a valid number!',
-        },
-        number: {
-            range: '${label} must be between ${min} and ${max}',
-        },
+    const validateEmail = (rule: any, value: any) => {
+        if (!value) {
+            return Promise.reject('Vui lòng nhập email!');
+        } else if (!/^\S+@\S+\.\S+$/.test(value)) {
+            return Promise.reject('Email không hợp lệ!');
+        }
+        return Promise.resolve();
     };
 
-
-    const onFinish = (values: any) => {
-        console.log(values);
+    const validatePhone = (rule: any, value: any) => {
+        if (!value) {
+            return Promise.reject('Vui lòng nhập số điện thoại!');
+        } else if (!/^[0-9]{10}$/.test(value)) {
+            return Promise.reject('Số điện thoại không hợp lệ!');
+        }
+        return Promise.resolve();
     };
     return (
-        <>
-
+        <div className="main-body">
             <h1>Order</h1>
             <Button type="primary" onClick={showModal}>
-                Thêm Mới <PlusOutlined />
+                Thêm mới<PlusOutlined />
             </Button>
-            <Modal title="Thêm mới" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <Form
-                    {...layout}
-                    name="nest-messages"
-                    onFinish={onFinish}
-                    style={{ maxWidth: 600 }}
-                    validateMessages={validateMessages}
-                >
-                    <Form.Item name={['user', 'orderID']} label="OrderID" rules={[{ required: true }]}>
+            <Modal title="Thêm mới" visible={isModalOpen} onOk={handleCreatedOk} onCancel={handleCreateCancel} footer={null}>
+                <Form form={form} onFinish={onHandleCreate}>
+                    <Form.Item
+                        name="CustomerID"
+                        label="CustomerID"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập LastName!' },
+                            { validator: validateName },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item name={['user', 'CustomerID']} label="CustomerID" rules={[{ type: 'email' }]}>
+                    <Form.Item
+                        name="Phone"
+                        label="Phone"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập số điện thoại!' },
+                            { validator: validatePhone },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item name={['user', 'orderDate']} label="OrderDate" >
-                        <InputNumber />
-                    </Form.Item>
-                    <Form.Item name={['user', 'totalAmount']} label="TotalAmount" >
+                    <Form.Item
+                        name="OrderDate"
+                        label="OrderDate"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập Email!' },
+                            { validator: validateEmail },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item name={['user', 'employeeSubmit']} label="EmployeeSubmit">
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name={['user', 'orderChannel']} label="OrderChannel">
-                        <Input />
-                    </Form.Item>
-                    <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
                     </Form.Item>
                 </Form>
             </Modal>
-            <Table dataSource={data} columns={columns}>
-            </Table>
-        </>)
+            <Modal
+                title="Thông Tin Chi Tiết"
+                visible={isView}
+                onCancel={handleViewCancel}
+                footer={null}
+            >
+                {selectedRow && (
+                    <div>
+                        <p>OrderID: {selectedRow.OrderID}</p>
+                        <p>CustomerID: {selectedRow.CustomerID}</p>
+                        <p>OrderDate: {selectedRow.OrderDate}</p>
+                        <p>Phone: {selectedRow.Phone}</p>
+                        <p>EmployeeSubmit: {selectedRow.EmployeeSubmit}</p>
+                    </div>
+                )}
+            </Modal>
+            <Table
+                columns={columns}
+                dataSource={data}
+            />
+        </div>
+    );
 }
 export default Order;

@@ -13,6 +13,7 @@ import ShippingMethods from "./Shippings";
 import Shippings from "./ShippingMethods";
 import CustomerComponent from "./CustomerComponent";
 import Test from './Test';
+import Tests from './Test';
 type MenuItem = Required<MenuProps>['items'][number];
 const { Header, Content, Footer, Sider } = Layout;
 
